@@ -1,84 +1,110 @@
-from library_oop import Book, Member
+from library_oop import Book, Member, Library
 
-# test cases for class Book
-def test_book_class():
+# Test Code for OOP Library System
+def test_library_system():
+    """Comprehensive test of all library functions"""
+    
     print("=" * 60)
-    print("TESTING BOOK CLASS")
+    print("LIBRARY MANAGEMENT SYSTEM - COMPREHENSIVE TEST")
     print("=" * 60)
 
-    book = Book(1, "Python Crash Course", "Eric Matthes", 3)
-    print(f"Created book: {book}")
+    library = Library()
+    
+    # Test 1: Add Books
+    print("\n--- TEST 1: Adding Books ---")
+    library.add_book(1, "Python Crash Course", "Eric Matthes", 3)
+    library.add_book(2, "Clean Code", "Robert Martin", 2)
+    library.add_book(3, "The Pragmatic Programmer", "Hunt & Thomas", 1)
+    library.add_book(4, "Design Patterns", "Gang of Four", 2)
+    
+    # Test 2: Add Members
+    print("\n--- TEST 2: Registering Members ---")
+    library.add_member(101, "Alice Smith", "alice@email.com")
+    library.add_member(102, "Bob Jones", "bob@email.com")
+    library.add_member(103, "Carol White", "carol@email.com")
+    
+    # Test 3: Display Available Books
+    print("\n--- TEST 3: Display Available Books ---")
+    library.display_available_books()
+    
+    # Test 4: Successful Book Borrowing
+    print("\n--- TEST 4: Successful Borrowing ---")
+    library.borrow_book(101, 1)  # Alice borrows Python Crash Course
+    library.borrow_book(101, 2)  # Alice borrows Clean Code
+    library.borrow_book(102, 1)  # Bob borrows Python Crash Course
+    
+    # Test 5: Display Member's Borrowed Books
+    print("\n--- TEST 5: Display Member's Books ---")
+    library.display_member_books(101)  # Alice's books
+    library.display_member_books(102)  # Bob's books
+    library.display_member_books(103)  # Carol's books (none)
+    
+    # Test 6: Display Available Books After Borrowing
+    print("\n--- TEST 6: Available Books After Borrowing ---")
+    library.display_available_books()
+    
+    # Test 7: Borrow Last Available Copy
+    print("\n--- TEST 7: Borrowing Last Copy ---")
+    library.borrow_book(103, 3)  # Carol borrows the only copy of Pragmatic Programmer
+    library.display_available_books()
+    
+    # Test 8: Try to Borrow Unavailable Book
+    print("\n--- TEST 8: Attempting to Borrow Unavailable Book ---")
+    library.borrow_book(102, 3)  # Bob tries to borrow unavailable book
+    
+    # Test 9: Borrowing Limit Test
+    print("\n--- TEST 9: Testing Borrowing Limit (3 books max) ---")
+    library.borrow_book(101, 4)  # Alice's 3rd book
+    library.display_member_books(101)
+    library.borrow_book(101, 3)  # Alice tries to borrow 4th book (should fail)
+    
+    # Test 10: Return Books
+    print("\n--- TEST 10: Returning Books ---")
+    library.return_book(101, 1)  # Alice returns Python Crash Course
+    library.return_book(102, 1)  # Bob returns Python Crash Course
+    library.display_member_books(101)
+    library.display_available_books()
+    
+    # Test 11: Try to Return Book Not Borrowed
+    print("\n--- TEST 11: Attempting Invalid Return ---")
+    library.return_book(102, 2)  # Bob tries to return book he didn't borrow
+    
+    # Test 12: Return and Borrow Again
+    print("\n--- TEST 12: Return and Re-borrow ---")
+    library.return_book(103, 3)  # Carol returns Pragmatic Programmer
+    library.borrow_book(102, 3)  # Bob borrows it
+    library.display_member_books(102)
+    
+    # Test 13: Error Cases - Non-existent Member/Book
+    print("\n--- TEST 13: Error Handling ---")
+    library.borrow_book(999, 1)  # Non-existent member
+    library.borrow_book(101, 999)  # Non-existent book
+    library.return_book(999, 1)  # Non-existent member
+    library.display_member_books(999)  # Non-existent member
+    
+    # Test 14: Final Status
+    print("\n--- TEST 14: Final Library Status ---")
+    print("\nAll Borrowed Books:")
+    for member in library.members:
+        for book in member.borrow_books:
+            print(f"  {member.name} has '{book.title}'")
 
-    # Test borrow
-    print("\n--- TEST 1: Borrowing Books ---")
-    result1 = book.borrow()
-    result2 = book.borrow()
-    result3 = book.borrow()
-    result4 = book.borrow()
-    print(f"Borrow results: {result1}, {result2}, {result3}, {result4}")
-    print(f"After borrowing: {book.available_copies} copies left")
+    print("\nAll Members and Their Books:")
+    for member in library.members:
+        print(f"\n{member.name} ({member.member_id}):")
+        if member.borrow_books:
+            for book in member.borrow_books:
+                print(f"  - {book.title}")
+        else:
+            print("  (No books borrowed)")
 
-    # Test return_book
-    print("\n--- TEST 2: Returning Books ---")
-    result5 = book.return_book()
-    print(f"Return result: {result5}")
-    print(f"After returning: {book.available_copies} copies left")
+    library.display_available_books()
 
-    # Test returning book when it's full)
-    print("\n--- TEST 3: Returning More Than Total ---")
-    book.return_book()
-    book.return_book()
-    result6 = book.return_book()
-    print(f"Return result (over limit): {result6}")
-    print(f"Final book state: {book}")
-
+    
     print("\n" + "=" * 60)
-    print("TEST BOOK CLASS COMPLETE")
+    print("TEST COMPLETE")
     print("=" * 60)
 
-# test cases for class Member
-def test_member_class():
-    print("\n" + "=" * 60)
-    print("TESTING MEMBER CLASS")
-    print("=" * 60)
-
-    book1 = Book(1, "Python Crash Course", "Eric Matthes", 2)
-    book2 = Book(2, "Clean Code", "Robert Martin", 1)
-    book3 = Book(3, "The Pragmatic Programmer", "Hunt & Thomas", 1)
-
-    member = Member(101, "Alice Smith", "alice@email.com")
-    print(f"Created member: {member}")
-
-    #test borrow books
-    print("\n--- TEST 1: Borrowing Books ---")
-    member.borrow_book(book1)
-    member.borrow_book(book2)
-    member.borrow_book(book3)
-    extra_book = Book(4, "Design Patterns", "Gang of Four", 1)
-    member.borrow_book(extra_book)
-    print(f"{member.name} has borrowed {len(member.borrow_books)} books:")
-    for b in member.borrow_books:
-        print(f"- {b}")
-
-    #test return books
-    print("\n--- TEST 2: Returning Books ---")
-    member.return_book(book2)
-    print(f"{member.name} has borrowed {len(member.borrow_books)} books after returning one:")
-    for b in member.borrow_books:
-        print(f"- {b}")
-
-    # test return a book that is not borrowed
-    print("\n--- TEST 3: Returning a Book Not Borrowed ---")
-    member.return_book(Book(5, "Nonexistent Book", "Unknown", 1))
-    print("\nFinal borrowed books:")
-    for b in member.borrow_books:
-        print(f"- {b}")
-
-    print("\n" + "=" * 60)
-    print("TEST MEMBER CLASS COMPLETE")
-    print("=" * 60)
-
-
+# Run the comprehensive test
 if __name__ == "__main__":
-    test_book_class()
-    test_member_class()
+    test_library_system()
